@@ -1,8 +1,3 @@
-resource "aws_eip" "this" {
-  vpc      = true
-  instance = module.ec2.id[0]
-}
-
 resource "tls_private_key" "key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -56,22 +51,29 @@ module "security_group" {
   description = "Security group for usage with EC2 instance"
   vpc_id      = data.aws_vpc.default.id
 
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  # Rules should append from last
-  ingress_rules = [
-    "http-80-tcp", "http-8080-tcp", "all-icmp", "ssh-tcp",
-    "docker-swarm-mngmt-tcp", "docker-swarm-node-tcp", "docker-swarm-node-udp", "docker-swarm-overlay-udp"
+  ingress_with_self = [
+    { rule = "docker-swarm-mngmt-tcp" },
+    { rule = "docker-swarm-node-tcp" },
+    { rule = "docker-swarm-node-udp" },
+    { rule = "docker-swarm-overlay-udp" },
   ]
-  egress_rules      = ["http-80-tcp", "http-8080-tcp", "all-icmp", "ssh-tcp"]
-  ingress_with_self = [{ rule = "all-all" }]
-  tags              = merge({ Name = "${local.app_id}-sg" }, local.common_tags)
+
+  ingress_with_cidr_blocks = [
+    { rule = "http-80-tcp", cidr_blocks = "0.0.0.0/0" },
+    { rule = "http-8080-tcp", cidr_blocks = "0.0.0.0/0" },
+    { rule = "all-icmp", cidr_blocks = "0.0.0.0/0" },
+    { rule = "ssh-tcp", cidr_blocks = "0.0.0.0/0" },
+  ]
+
+  egress_rules = ["all-all"]
+  tags         = merge({ Name = "${local.app_id}-sg" }, local.common_tags)
 }
 
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.13.0"
 
-  instance_count              = 2
+  instance_count              = 1
   name                        = "${local.app_id}-EC2"
   ami                         = var.ami
   instance_type               = "t2.micro"

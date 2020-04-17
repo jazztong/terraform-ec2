@@ -1,4 +1,5 @@
 resource "null_resource" "wait_ready" {
+  count      = 0
   depends_on = [module.ec2.id]
 
   triggers = {
@@ -6,7 +7,7 @@ resource "null_resource" "wait_ready" {
   }
 
   connection {
-    host        = aws_eip.this.public_ip
+    host        = module.ec2.public_ip[0]
     user        = var.user_name
     private_key = tls_private_key.key.private_key_pem
   }
@@ -30,7 +31,7 @@ resource "null_resource" "command" {
   }
 
   connection {
-    host        = aws_eip.this.public_ip
+    host        = module.ec2.public_ip[0]
     user        = var.user_name
     private_key = tls_private_key.key.private_key_pem
   }
