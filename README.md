@@ -87,7 +87,7 @@ We use [SemVer](http://semver.org/) for versioning.
 
 ## License
 
-This project is under private license by `kerry logistics network limited`
+This project no License
 
 ## Know issue
 
