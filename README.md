@@ -1,6 +1,6 @@
-# KWMS3 Standalone Scan Infra project
+# EC2 Infra project
 
-This project manage all the infra component to support KWMS3 Standalone Warehouse scan solution
+This project use terraform to setup EC2
 
 ## Getting Started
 

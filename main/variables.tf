@@ -56,10 +56,10 @@ variable "tags" {
   description = "tags applied to all resources"
   type        = map(string)
   default = {
-    Project    = "KWMS3-Scan"
-    Department = "MYDCKL"
-    Team       = "Architecture"
-    Company    = "KLN"
+    Project    = "MyProject"
+    Department = "MyDeprt"
+    Team       = "MyTeam"
+    Company    = "MyCompany"
   }
 }
 

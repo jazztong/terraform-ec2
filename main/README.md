@@ -22,7 +22,7 @@
 | ecr\_account | AWS Account number that host the ECR | `string` | `"210636571704"` | no |
 | instance\_type | Instance type | `string` | `"t2.micro"` | no |
 | region | Region to run provision the ec2 | `string` | `"ap-southeast-1"` | no |
-| tags | tags applied to all resources | `map(string)` | <pre>{<br>  "Company": "KLN",<br>  "Department": "MYDCKL",<br>  "Project": "KWMS3-Scan",<br>  "Team": "Architecture"<br>}</pre> | no |
+| tags | tags applied to all resources | `map(string)` | <pre>{<br>  "Company": "MyCompany",<br>  "Department": "MyDeprt",<br>  "Project": "MyProject",<br>  "Team": "MyTeam"<br>}</pre> | no |
 | user\_name | User name to login machine | `string` | `"ec2-user"` | no |
 
 ## Outputs
