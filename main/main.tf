@@ -87,3 +87,8 @@ module "ec2" {
   user_data_base64 = base64encode(local.user_data)
   tags             = merge({ Name = "${local.app_id}-ec2" }, local.common_tags)
 }
+
+resource "aws_eip" "ips" {
+  count    = var.enable_eip ? length(module.ec2.id) : 0
+  instance = module.ec2.id[count.index]
+}

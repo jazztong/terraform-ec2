@@ -7,13 +7,19 @@ variable "app_env" {
 variable "app_id" {
   description = "Application ID"
   type        = string
-  default     = "KWMS3-Scan"
+  default     = "SWARM"
 }
 
 variable "region" {
   description = "Region to run provision the ec2"
   type        = string
   default     = "ap-southeast-1"
+}
+
+variable "enable_eip" {
+  description = "Attach EIP"
+  type        = bool
+  default     = true
 }
 
 variable "user_name" {

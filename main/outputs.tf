@@ -1,5 +1,5 @@
 output "public_ip" {
-  value = module.ec2.public_ip
+  value = aws_eip.ips.*.public_ip
 }
 
 output "private_pem" {
