@@ -18,6 +18,7 @@
 | app\_id | Application ID | `string` | `"SWARM"` | no |
 | artifact | Artifact for deploy image url | `map` | <pre>{<br>  "webapi": "labs/lab_webapi_cs:v1.3.1"<br>}</pre> | no |
 | cloud\_init\_file | Cloud init template file for user data | `string` | `"cloud-init.tmpl"` | no |
+| cloudwatch\_agent\_url | Cloudwatch agent URL to be use | `string` | `"https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm"` | no |
 | docker\_compose\_file | Docker compose yml file to build applications | `string` | `"docker-compose.yml"` | no |
 | ecr\_account | AWS Account number that host the ECR | `string` | `"210636571704"` | no |
 | enable\_eip | Attach EIP | `bool` | `true` | no |

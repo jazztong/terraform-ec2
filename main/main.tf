@@ -15,6 +15,25 @@ resource "aws_iam_role_policy_attachment" "attachment" {
   policy_arn = element(local.role_policy_arns, count.index)
 }
 
+resource "aws_iam_role_policy" "ec2_inline_policy" {
+  name   = "${local.app_id}-EC2-Inline-Policy"
+  role   = aws_iam_role.role.id
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ssm:GetParameter"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role" "role" {
   name = "${local.app_id}-EC2-Role"
   path = "/"

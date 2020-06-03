@@ -3,6 +3,9 @@
 runcmd:
   - yum update
   - yum install -y docker amazon-ecr-credential-helper
+  - wget ${cloudwatch_agent_url}
+  - sudo rpm -U ./amazon-cloudwatch-agent.rpm
+  - /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:${ssm_cloudwatch_config} -s
   - echo "ECR_HOST=${ecr_account}.dkr.ecr.${region}.amazonaws.com" >> /etc/environment
   - service docker start
   - systemctl enable docker

@@ -58,6 +58,12 @@ variable "cloud_init_file" {
   default     = "cloud-init.tmpl"
 }
 
+variable "cloudwatch_agent_url" {
+  description = "Cloudwatch agent URL to be use"
+  type        = string
+  default     = "https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm"
+}
+
 variable "tags" {
   description = "tags applied to all resources"
   type        = map(string)
