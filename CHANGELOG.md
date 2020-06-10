@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/jazztong/terraform-ec2/compare/v1.1.0...v1.2.0) (2020-06-10)
+
+
+### Features
+
+* Change user data to use dynamic node joiner ([a23a1e0](https://github.com/jazztong/terraform-ec2/commit/a23a1e0a8d4384d4741753d6e7a1c0e3b1c48089))
+
 ## 1.1.0 (2020-06-03)
 
 
