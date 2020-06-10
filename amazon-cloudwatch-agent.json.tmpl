@@ -87,6 +87,12 @@
       "files": {
         "collect_list": [
           {
+            "file_path": "/var/log/user-data.log",
+            "log_group_name": "/${app_id}/${app_env}/ec2/UserDataLog",
+            "log_stream_name": "{instance_id}_{hostname}",
+            "timezone": "Local"
+          },
+          {
             "file_path": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log",
             "log_group_name": "/${app_id}/${app_env}/ec2/CloudWatchAgentLog",
             "log_stream_name": "{instance_id}_{hostname}",

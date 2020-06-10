@@ -1,5 +1,6 @@
 locals {
   log_group_creates = [
+    "ec2/UserDataLog",
     "ec2/CloudWatchAgentLog",
     "ec2/var/log/messages",
     "ec2/var/log/secure",

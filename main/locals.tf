@@ -1,13 +1,15 @@
 locals {
-  user_data = templatefile("cloud-init.tmpl", {
-    ecr_account           = var.ecr_account
-    region                = var.region
-    user_name             = var.user_name
-    ssm_cloudwatch_config = aws_ssm_parameter.cloudwatch-agent-config.name
-    cloudwatch_agent_url  = var.cloudwatch_agent_url
+  user_data = templatefile("user-data.sh.tmpl", {
+    ecr_account            = var.ecr_account
+    region                 = var.region
+    user_name              = var.user_name
+    ssm_cloudwatch_config  = aws_ssm_parameter.cloudwatch-agent-config.name
+    cloudwatch_agent_url   = var.cloudwatch_agent_url
+    SWARM_DISCOVERY_BUCKET = aws_s3_bucket.discovery.bucket
+    ROLE                   = "manager"
   })
 
-  cw_agent_config = templatefile("amazon-cloudwatch-agent.tmpl.json", {
+  cw_agent_config = templatefile("amazon-cloudwatch-agent.json.tmpl", {
     app_id  = local.app_id_lower
     app_env = var.app_env
   })

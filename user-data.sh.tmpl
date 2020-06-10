@@ -1,0 +1,62 @@
+#! /bin/bash
+set -e
+
+# Ouput all log
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+# Make sure we have all the latest updates when we launch this instance
+yum update -y
+yum upgrade -y
+
+# Create a weekly cron job to give us the latest security updates
+echo "/usr/bin/yum update --security -y" > /etc/cron.weekly/yumsecurity.cron
+
+# Install docker
+yum install -y docker amazon-ecr-credential-helper
+
+# Configure environment variables
+echo "ECR_HOST=${ecr_account}.dkr.ecr.${region}.amazonaws.com" >> /etc/environment
+
+# Docker config folder isn't created until after docker is started, so we create it here
+mkdir -p /etc/docker && chmod 0700 /etc/docker
+# We want experimental support to allow us to use "docker service logs <name>"
+echo '{"experimental": true}' > /etc/docker/daemon.json
+
+# Add credential helper to pull from ECR
+mkdir -p ~/.docker && chmod 0700 ~/.docker
+echo '{"credHelpers":{"${ecr_account}.dkr.ecr.${region}.amazonaws.com":"ecr-login"}}' > ~/.docker/config.json
+
+# Start docker now and enable auto start on boot
+service docker start && chkconfig docker on
+
+# Allow the ec2-user to run docker commands without sudo
+usermod -a -G docker ec2-user
+
+# Allow user to use ECR auth
+mkdir -p /home/${user_name}/.docker && chmod 0700 /home/${user_name}/.docker
+echo '{"credHelpers":{"${ecr_account}.dkr.ecr.${region}.amazonaws.com":"ecr-login"}}' > /home/${user_name}/.docker/config.json
+
+# Every time we stop and recreate our app, old containers, images and networks will be left over
+# Run this every hour to clean them up
+echo "docker system prune --force" > /etc/cron.hourly/docker-cleanup.cron
+
+# Get local ip from the instance metadata, we need to specify this when creating/joining the swarm
+PRIVATE_IP=$(curl -fsS http://instance-data/latest/meta-data/local-ipv4)
+
+# One shot a custom container with a small script to automatically init swarm, using S3 for discovery
+docker run -d --restart on-failure:15 \
+-e SWARM_DISCOVERY_BUCKET=${SWARM_DISCOVERY_BUCKET} \
+-e ROLE=${ROLE} \
+-e NODE_IP=$PRIVATE_IP \
+-v /var/run/docker.sock:/var/run/docker.sock \
+mrjgreen/aws-swarm-init
+
+# Configure Cloudwatch agent
+wget ${cloudwatch_agent_url}
+rpm -U ./amazon-cloudwatch-agent.rpm
+
+# Use cloudwatch config from SSM
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+-a fetch-config \
+-m ec2 \
+-c ssm:${ssm_cloudwatch_config} -s
